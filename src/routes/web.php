@@ -14,6 +14,8 @@ use App\Http\Controllers\UseController;
 */
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/', [ItemController::class, 'index'])->name('home');
+
     Route::get('/mypage/profile', [UseController::class, 'edit'])->name('profile.edit');
     Route::post('/mypage/profile', [UseController::class, 'update'])->name('profile.update');
 });
