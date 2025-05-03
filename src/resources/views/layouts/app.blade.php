@@ -11,13 +11,13 @@
 <body>
     <header class="header">
         <div class="header__inner">
-            <a href="{{ url('/') }}" class="header__logo">
+            <a href="{{ route('home') }}" class="header__logo">
                 <img src="{{ asset('images/logo.svg') }}" alt="COACHTECHロゴ">
             </a>
 
             @auth
-            <form method="GET" action="{{ url('/') }}" class="header__search-form">
-                <input type="text" name="query" placeholder="なにをお探しですか？">
+            <form method="GET" action="{{ route('home') }}" class="header__search-form">
+                <input type="text" name="query" placeholder="なにをお探しですか？" value="{{ request('query') }}">
             </form>
             <nav class="header__nav">
                 <form method="POST" action="{{ route('logout') }}">

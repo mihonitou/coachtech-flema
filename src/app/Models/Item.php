@@ -52,4 +52,9 @@ class Item extends Model
     {
         return $this->belongsToMany(Category::class, 'category_item');
     }
+
+    public function isSold()
+    {
+        return $this->sold === 1; // soldカラムが1なら「購入済み」
+    }
 }
