@@ -1,7 +1,10 @@
 @extends('layouts.app')
 
-@section('content')
+@section('css')
 <link rel="stylesheet" href="{{ asset('css/items_index.css') }}">
+@endsection
+
+@section('content')
 
 <div class="index-container">
 
@@ -35,7 +38,9 @@
         @foreach ($items as $item)
         <div class="item-card">
             <div class="item-image-container">
-                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="item-image">
+                <a href="{{ route('items.show', $item) }}">
+                    <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="item-image">
+                </a>
                 @if ($item->isSold())
                 <span class="sold-label"></span>
                 @endif

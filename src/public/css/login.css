@@ -1,6 +1,7 @@
 /* 全体の中央寄せレイアウト */
 form {
     max-width: 400px;
+    width: 90%;
     margin: 40px auto;
     padding: 30px;
     background-color: #fff;
@@ -22,12 +23,13 @@ form {
 /* エラーメッセージ */
 .alert {
     max-width: 400px;
+    width: 90%;
     margin: 0 auto 20px;
     padding: 15px;
     border: 1px solid #f5c6cb;
     border-radius: 5px;
     background-color: #f8d7da;
-    color: #721c24;
+    color: #bf1928;
 }
 
 .alert ul {
@@ -59,7 +61,7 @@ form {
 .btn-login {
     width: 100%;
     padding: 12px;
-    background-color: #ea6157;
+    background-color: #f54c40;
     color: #fff;
     font-weight: bold;
     border: none;
@@ -69,7 +71,7 @@ form {
 }
 
 .btn-login:hover {
-    background-color: #d64f45;
+    background-color: #f57c73;
 }
 
 /* 会員登録リンク */
@@ -86,4 +88,49 @@ form {
 
 .form-link a:hover {
     text-decoration: underline;
+}
+
+/* ======================
+   レスポンシブ対応
+======================= */
+
+/* タブレット（〜1024px） */
+@media screen and (max-width: 1024px) {
+    .header__text {
+        font-size: 20px;
+    }
+
+    form {
+        padding: 25px;
+    }
+
+    .btn-login {
+        font-size: 15px;
+        padding: 10px;
+    }
+}
+
+/* スマホ（〜767px） */
+@media screen and (max-width: 767px) {
+    .header__text {
+        font-size: 18px;
+    }
+
+    form {
+        padding: 20px;
+    }
+
+    .form-group input {
+        font-size: 13px;
+        padding: 8px;
+    }
+
+    .btn-login {
+        font-size: 14px;
+        padding: 10px;
+    }
+
+    .form-link a {
+        font-size: 13px;
+    }
 }

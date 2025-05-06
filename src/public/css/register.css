@@ -42,7 +42,7 @@ input[type="password"] {
 .btn-register {
     width: 100%;
     padding: 12px;
-    background-color: #f46f61;
+    background-color: #f54c40;
     border: none;
     color: white;
     font-size: 16px;
@@ -53,7 +53,7 @@ input[type="password"] {
 }
 
 .btn-register:hover {
-    background-color: #e35849;
+    background-color: #f57c73;
 }
 
 .form-link {
@@ -73,9 +73,53 @@ input[type="password"] {
 
 .alert {
     background-color: #f8d7da;
-    color: #721c24;
+    color: #bf1928;
     border-radius: 4px;
     padding: 10px 15px;
     margin-bottom: 20px;
     border: 1px solid #f5c6cb;
+}
+
+/* ======================
+   レスポンシブ対応 
+=======================*/
+
+/* タブレット（〜1024px） */
+@media screen and (max-width: 1024px) {
+    form {
+        width: 90%;
+        padding: 30px;
+    }
+
+    .header__text {
+        font-size: 18px;
+    }
+}
+
+/* スマホ（〜767px） */
+@media screen and (max-width: 767px) {
+    form {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .header__text {
+        font-size: 16px;
+    }
+
+    .btn-register {
+        padding: 10px;
+        font-size: 15px;
+    }
+
+    .form-link a {
+        font-size: 13px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        font-size: 13px;
+        padding: 8px;
+    }
 }

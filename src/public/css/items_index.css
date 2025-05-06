@@ -7,8 +7,10 @@
 
 .tab-menu {
     display: flex;
-    gap: 24px;
+    flex-wrap: wrap;
+    gap: 16px;
     margin-bottom: 8px;
+    justify-content: center;
 }
 
 .tab {
@@ -17,7 +19,7 @@
 }
 
 .tab-active {
-    color: red;
+    color: #f54c40;
     font-weight: bold;
 }
 
@@ -33,7 +35,7 @@
 
 .item-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 24px;
 }
 
@@ -43,6 +45,12 @@
     border-radius: 6px;
     padding: 8px;
     text-align: center;
+    background-color: #fff;
+    transition: box-shadow 0.2s ease;
+}
+
+.item-card:hover {
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
 .item-image-container {
@@ -67,8 +75,8 @@
     left: 0;
     width: 0;
     height: 0;
-    border-top: 50px solid red;     /* 三角形の高さ */
-    border-right: 50px solid transparent; /* 三角形の幅 */
+    border-top: 50px solid red;
+    border-right: 50px solid transparent;
     z-index: 1;
 }
 
@@ -85,8 +93,6 @@
     font-family: sans-serif;
 }
 
-
-
 .item-name {
     margin-top: 10px;
     font-size: 14px;
@@ -102,10 +108,55 @@
     text-align: center;
 }
 
-/* 該当なし表示の調整（任意） */
+/* 該当なし表示 */
 .no-items {
     text-align: center;
     color: #999;
     font-size: 15px;
     margin-top: 40px;
+}
+
+/* ==============================
+   レスポンシブ調整
+============================== */
+
+/* タブレット（〜1024px） */
+@media screen and (max-width: 1024px) {
+    .tab {
+        font-size: 16px;
+    }
+
+    .item-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
+    }
+
+    .item-name {
+        font-size: 13px;
+    }
+}
+
+/* スマホ（〜768px） */
+@media screen and (max-width: 768px) {
+    .tab {
+        font-size: 15px;
+    }
+
+    .item-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 16px;
+    }
+
+    .item-card {
+        padding: 6px;
+    }
+
+    .item-name {
+        font-size: 12px;
+    }
+
+    .search-result-label,
+    .no-items {
+        font-size: 14px;
+    }
 }

@@ -1,0 +1,189 @@
+.item-detail-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 2rem auto;
+    max-width: 1200px;
+    padding: 0 20px;
+}
+
+.item-image-box {
+    flex: 1 1 40%;
+    text-align: center;
+}
+
+.item-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.item-info-box {
+    flex: 1 1 55%;
+}
+
+.item-name {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.brand-name {
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.item-price {
+    font-size: 1.5rem;
+    color: #555;
+    margin-bottom: 1rem;
+}
+
+.item-stats {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.like-icon {
+    cursor: pointer;
+    color: #888;
+    transition: color 0.3s;
+}
+
+.like-icon.liked {
+    color: #f54c40; /* 赤など、目立つ色 */
+}
+
+.comment-icon {
+    margin-left: 20px;
+    color: #555;
+}
+
+.purchase-btn {
+    background-color: #f54c40;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.25rem;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.description p,
+.item-details div {
+    margin: 0.5rem 0;
+}
+
+.category-badge {
+    display: inline-block;
+    background-color: #eee;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    margin-right: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.comments-section {
+    margin-top: 3rem;
+}
+
+.comment-box {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    gap: 10px;
+}
+
+.user-icon {
+    font-size: 2rem;
+}
+
+.comment-content {
+    background-color: #f5f5f5;
+    padding: 0.75rem;
+    border-radius: 6px;
+    flex-grow: 1;
+}
+
+.comment-form {
+    margin-top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.comment-form textarea {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+.comment-submit-btn {
+    align-self: flex-end;
+    background-color: #f54c40;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.error {
+    color: #bf1928;
+    font-size: 0.875rem;
+}
+
+.login-reminder {
+    color: #bf1928;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+/* ---------- レスポンシブ ---------- */
+
+/* タブレットサイズ（768〜1024px） */
+@media screen and (max-width: 1024px) {
+    .item-detail-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .item-image-box,
+    .item-info-box {
+        width: 100%;
+    }
+
+    .purchase-btn {
+        width: 100%;
+    }
+}
+
+/* スマホサイズ（〜767px） */
+@media screen and (max-width: 767px) {
+    .item-name {
+        font-size: 1.5rem;
+    }
+
+    .item-price {
+        font-size: 1.2rem;
+    }
+
+    .section-title {
+        font-size: 1.1rem;
+    }
+
+    .comment-content {
+        font-size: 0.95rem;
+    }
+
+    .purchase-btn {
+        font-size: 1rem;
+        padding: 0.5rem;
+    }
+}
