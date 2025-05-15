@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string('profile_image')->nullable(); // プロフィール画像（null許可）
             $table->string('postal_code', 10)->nullable(); // 郵便番号
             $table->text('address')->nullable(); // 住所
+            $table->string('building')->nullable(); // 建物名（NULL許可）
             $table->rememberToken();
             $table->timestamps();
         });

@@ -18,12 +18,12 @@ class CreateItemsTable extends Migration
             $table->foreignId('user_id') // 外部キー (users.id)
                 ->constrained()
                 ->onDelete('cascade');
-            $table->string('name', 225);
+            $table->string('name');
             $table->text('description');
             $table->integer('price');
             $table->enum('status', ['new', 'used']);
-            $table->string('brand_name', 225)->nullable();
-            $table->string('image_path', 225);
+            $table->string('brand_name')->nullable();
+            $table->string('image_path');
             $table->boolean('sold');
             $table->timestamps();
         });

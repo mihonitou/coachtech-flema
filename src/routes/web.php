@@ -24,6 +24,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/item/{item}/like', [ItemController::class, 'toggleLike'])->name('items.toggle_like');
     Route::post('/item/{item}/comment', [ItemController::class, 'addComment'])->name('items.comment');
     Route::get('/purchase/{item}', [PurchaseController::class, 'show'])->name('purchase.show');
+    Route::post('/purchase/{item}', [PurchaseController::class, 'store'])->name('purchase.store');
+
+    // 表示用: 編集画面を開く
+    Route::get('/purchase/address/{item}', [PurchaseController::class, 'editAddress'])->name('purchase.address.edit');
+
+    // 更新用: 送信された住所を保存
+    Route::put('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->name('purchase.address.update');
+
+
 
     Route::get('/mypage/profile', [UseController::class, 'edit'])->name('profile.edit');
     Route::post('/mypage/profile', [UseController::class, 'update'])->name('profile.update');
