@@ -20,7 +20,7 @@ class PurchaseController extends Controller
         // 住所：セッション or DB or プロフィール
         $shippingAddress = ShipmentAddress::where('item_id', $item->id)->first();
 
-        return view('purchase_index', [
+        return view('purchase.index', [
             'item' => $item,
             'user' => $user,
             'shippingAddress' => $shippingAddress,
@@ -58,35 +58,30 @@ class PurchaseController extends Controller
         return redirect()->route('items.index')->with('success', '商品を購入しました。');
     }
 
-    // 配送先変更画面の表示
     public function editAddress(Item $item)
     {
-        $user = Auth::user();
-        $shippingAddress = ShipmentAddress::where('item_id', $item->id)->first();
+        $purchase = Purchase::where('item_id', $item->id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail(); // ← 購入履歴がなければ404
 
-        return view('purchase_address_edit', [
+        $shippingAddress = $purchase->shipmentAddress;
+
+        return view('purchase.address', [
             'item' => $item,
-            'user' => $user,
             'shippingAddress' => $shippingAddress,
         ]);
     }
 
-    // 送付先住所を保存
     public function updateAddress(AddressRequest $request, Item $item)
     {
-        $user = Auth::user();
+        $purchase = Purchase::where('item_id', $item->id)
+            ->where('user_id', Auth::id())
+            ->firstOrFail();
 
-        ShipmentAddress::updateOrCreate(
-            ['item_id' => $item->id],
-            [
-                'user_id' => $user->id,
-                'postal_code' => $request->postal_code,
-                'address' => $request->address,
-                'building' => $request->building,
-            ]
-        );
+        $shippingAddress = $purchase->shipmentAddress;
 
-        return redirect()->route('purchase.show', ['item' => $item->id])
-            ->with('success', '配送先住所を更新しました。');
+        $shippingAddress->update($request->only(['postal_code', 'address', 'building']));
+
+        return redirect()->route('purchases.index')->with('success', '住所を更新しました');
     }
 }

@@ -21,7 +21,7 @@
                 <input type="text" name="query" placeholder="なにをお探しですか？" value="{{ request('query') }}">
             </form>
             <nav class="header__nav">
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('ログアウトしますか？')">
                     @csrf
                     <button type="submit" class="nav__link">ログアウト</button>
                 </form>

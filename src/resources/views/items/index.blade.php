@@ -10,17 +10,17 @@
 
     {{-- タブメニュー --}}
     <div class="tab-menu">
-        <a href="{{ route('home') }}" class="tab {{ request()->query('tab') !== 'mylist' ? 'tab-active' : 'tab-inactive' }}">
+        <a href="{{ route('home') }}" class="tab {{ request('tab') !== 'mylist' ? 'tab-active' : 'tab-inactive' }}">
             おすすめ
         </a>
-        <a href="{{ route('items.mylist') }}" class="tab {{ request()->query('tab') === 'mylist' ? 'tab-active' : 'tab-inactive' }}">
+        <a href="{{ route('home', ['tab' => 'mylist']) }}" class="tab {{ request('tab') === 'mylist' ? 'tab-active' : 'tab-inactive' }}">
             マイリスト
         </a>
     </div>
     <hr class="tab-underline">
 
     @if (!empty($query))
-    <p class="search-result">「{{ $query }}」の検索結果</p>
+    <p class="search-result-label">「{{ $query }}」の検索結果</p>
     @endif
 
     @if ($items->isEmpty())

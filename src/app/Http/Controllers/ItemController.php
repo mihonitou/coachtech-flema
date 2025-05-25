@@ -7,42 +7,34 @@ use App\Models\Item;
 
 use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CommentRequest;
-
+use App\Http\Requests\ExhibitionRequest;
 
 class ItemController extends Controller
 {
     public function index(Request $request)
     {
-        if (Auth::check()) {
-            $items = Item::where('user_id', '!=', Auth::id())->get();
-        } else {
-            $items = Item::all();
+        $tab = $request->query('tab');
+
+        if ($tab === 'mylist') {
+            if (!auth()->check()) {
+                return redirect()->route('login');
+            }
+
+            $user = auth()->user();
+
+            if (method_exists($user, 'favorites')) {
+
+                $items = $user->favorites()->latest()->get();
+            } else {
+                $items = collect(); // favorites メソッドがなければ空コレクション
+            }
+            return view('items.mylist', compact('items'));
         }
 
+        $items = Item::latest()->get(); // おすすめ
         return view('items.index', compact('items'));
     }
 
-    public function mylist(Request $request)
-    {
-        if (!Auth::check()) {
-            // 未ログインなら空の一覧を返す
-            $items = collect();
-        } else {
-            $user = Auth::user();
-
-            $tab = $request->query('tab'); // クエリパラメータを取得
-
-            if ($tab === 'mylist') {
-                // 「いいね」した商品を取得
-                $items = $user->likes->pluck('item'); // likeリレーションからitemを集める
-            } else {
-                // 他のタブ（もし今後増やすなら）もここで分岐できる
-                $items = collect();
-            }
-        }
-
-        return view('items.mylist', compact('items'));
-    }
 
     public function show(Item $item)
     {
@@ -95,5 +87,31 @@ class ItemController extends Controller
         ]);
 
         return redirect()->route('items.show', $item)->with('success', 'コメントを投稿しました。');
+    }
+
+    public function create()
+    {
+        return view('sell.create'); // 出品画面 Blade
+    }
+
+    public function store(ExhibitionRequest $request)
+    {
+        $validated = $request->validated();
+
+        $imagePath = $request->file('image')->store('item_images', 'public');
+
+        $item = Item::create([
+            'user_id' => auth()->id(),
+            'image_path' => $imagePath,
+            'name' => $validated['name'],
+            'brand' => $request->input('brand'), // brandはバリデーション不要ならvalidated外でOK
+            'description' => $validated['description'],
+            'price' => $validated['price'],
+            'condition' => $validated['condition'],
+        ]);
+
+        $item->categories()->sync($validated['categories']);
+
+        return redirect('/')->with('success', '商品を出品しました。');
     }
 }

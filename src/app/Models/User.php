@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use App\Models\Item; // ← これを追加！
 
 class User extends Authenticatable
 {
@@ -69,5 +70,15 @@ class User extends Authenticatable
     public function shipmentAddresses()
     {
         return $this->hasMany(ShipmentAddress::class);
+    }
+
+    /**
+     * お気に入り商品
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function favorites()
+    {
+        return $this->belongsToMany(Item::class, 'likes', 'user_id', 'item_id')->withTimestamps();
     }
 }

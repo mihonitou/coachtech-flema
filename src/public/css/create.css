@@ -1,0 +1,155 @@
+/* 基本レイアウト */
+.sell-wrapper {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.sell-title {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.form-block {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 18px;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid #ccc;
+    margin: 20px 0;
+}
+
+/* 成功メッセージ */
+.alert__message {
+    color: #155724;
+    background-color: #d4edda;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    font-size: 0.95em;
+}
+
+/* 入力欄 */
+.form-input, .form-select, .form-textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+}
+
+.form-textarea {
+    height: 120px;
+    resize: vertical;
+}
+
+.price-input-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.yen-symbol {
+    margin-right: 8px;
+    font-size: 16px;
+}
+
+/* エラーメッセージ */
+.error-message {
+    color: #bf1928;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* 画像アップロード */
+.image-upload-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #f54c40;
+    background-color: #fff;
+    height: 120px;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.image-label {
+    color: #f54c40;
+    font-size: 16px;
+}
+
+.hidden-input {
+    display: none;
+}
+
+/* カテゴリータグ */
+.category-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    border: 2px solid #f54c40;
+    color: #f54c40;
+    background-color: #fff;
+    padding: 6px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.tag:hover {
+    background-color: #f54c40;
+    color: #fff;
+}
+
+.tag input {
+    display: none;
+}
+
+/* 出品ボタン */
+.submit-button {
+    background-color: #f54c40;
+    color: #fff;
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+    background-color: #f57c73;
+}
+
+/* レスポンシブ */
+@media screen and (max-width: 850px) {
+    .sell-wrapper {
+        padding: 15px;
+    }
+
+    .sell-title {
+        font-size: 24px;
+    }
+
+    .submit-button {
+        padding: 10px;
+        font-size: 15px;
+    }
+}
+
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .sell-wrapper {
+        max-width: 900px;
+    }
+}

@@ -183,10 +183,10 @@
 }
 
 /* 他のスタイルの下にこれを追加 */
-.error-message {
+.no-shipping-warning {
     color: #bf1928;
-    font-size: 0.9em;
-    margin-top: 4px;
+    font-size: 14px;
+    margin-bottom: 10px;
 }
 
 /* タブレット対応 */

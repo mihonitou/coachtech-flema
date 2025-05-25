@@ -57,25 +57,28 @@
                     <a href="{{ route('purchase.address.edit', ['item' => $item->id]) }}" class="change-address-link">変更する</a>
                 </div>
 
+                {{-- 配送先未登録メッセージ --}}
+                @if (
+                empty(old('postal_code')) && empty($shippingAddress?->postal_code) && empty($user->postal_code)
+                || empty(old('address')) && empty($shippingAddress?->address) && empty($user->address)
+                )
+                <div class="no-shipping-warning">※ まだ配送先が登録されていません。</div>
+                @endif
+
                 {{-- 郵便番号 --}}
                 <div class="address-block">
                     <label>郵便番号</label>
                     <span>
                         @if (old('postal_code'))
                         {{ old('postal_code') }}
-                        @elseif (!empty($shippingAddress) && !empty($shippingAddress->postal_code))
+                        @elseif (!empty($shippingAddress?->postal_code))
                         {{ $shippingAddress->postal_code }}
                         @else
                         {{ $user->postal_code }}
                         @endif
                     </span>
-                    <input type="hidden" name="postal_code" value="{{ old('postal_code') ?? $shippingAddress->postal_code ?? $user->postal_code }}">
-
-                    {{-- エラーメッセージ --}}
-                    @error('postal_code')
-                    <div class="error-message">{{ $message }}</div>
-                    @enderror
-
+                    <input type="hidden" name="postal_code"
+                        value="{{ old('postal_code') ?? $shippingAddress?->postal_code ?? $user->postal_code }}">
                 </div>
 
                 {{-- 住所 --}}
@@ -84,19 +87,14 @@
                     <span>
                         @if (old('address'))
                         {{ old('address') }}
-                        @elseif (!empty($shippingAddress) && !empty($shippingAddress->address))
+                        @elseif (!empty($shippingAddress?->address))
                         {{ $shippingAddress->address }}
                         @else
                         {{ $user->address }}
                         @endif
                     </span>
-                    <input type="hidden" name="address" value="{{ old('address') ?? $shippingAddress->address ?? $user->address }}">
-
-                    {{-- エラーメッセージ --}}
-                    @error('address')
-                    <div class="error-message">{{ $message }}</div>
-                    @enderror
-
+                    <input type="hidden" name="address"
+                        value="{{ old('address') ?? $shippingAddress?->address ?? $user->address }}">
                 </div>
 
                 {{-- 建物名（任意）--}}
@@ -105,20 +103,22 @@
                     <span>
                         @if (old('building'))
                         {{ old('building') }}
-                        @elseif (!empty($shippingAddress) && !empty($shippingAddress->building))
+                        @elseif (!empty($shippingAddress?->building))
                         {{ $shippingAddress->building }}
                         @else
                         {{ $user->building ?? '' }}
                         @endif
                     </span>
-                    <input type="hidden" name="building" value="{{ old('building') ?? $shippingAddress->building ?? $user->building }}">
+                    <input type="hidden" name="building"
+                        value="{{ old('building') ?? $shippingAddress?->building ?? $user->building }}">
                 </div>
 
-                {{-- ここに追加 --}}
+                {{-- 送付先IDがあれば hidden で送信 --}}
                 @if($shippingAddress)
                 <input type="hidden" name="shipment_address_id" value="{{ $shippingAddress->id }}">
                 @endif
             </div>
+
         </div>
 
         {{-- 右カラム --}}

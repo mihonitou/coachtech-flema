@@ -10,10 +10,10 @@
 
     {{-- タブメニュー --}}
     <div class="tab-menu">
-        <a href="{{ route('home') }}" class="tab {{ request()->query('tab') !== 'mylist' ? 'tab-inactive' : '' }}">
+        <a href="{{ route('home') }}" class="tab {{ request('tab') !== 'mylist' ? 'tab-active' : 'tab-inactive' }}">
             おすすめ
         </a>
-        <a href="{{ route('items.mylist') }}" class="tab {{ request()->query('tab') === 'mylist' ? 'tab-active' : 'tab-inactive' }}">
+        <a href="{{ route('home', ['tab' => 'mylist']) }}" class="tab {{ request('tab') === 'mylist' ? 'tab-active' : 'tab-inactive' }}">
             マイリスト
         </a>
     </div>

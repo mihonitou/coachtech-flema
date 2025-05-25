@@ -19,7 +19,6 @@ class CreateShipmentAddressesTable extends Migration
                 ->constrained()
                 ->onDelete('cascade');
 
-            $table->string('name');         // 宛名（NOT NULL）
             $table->string('postal_id', 10);     // 郵便番号（NOT NULL）
             $table->text('address');             // 住所（NOT NULL）
             $table->string('building')->nullable(); // 建物名（NULL許可）

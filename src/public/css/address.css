@@ -1,0 +1,101 @@
+/* address.css */
+
+body {
+    font-family: 'Helvetica Neue', sans-serif;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+/* コンテナ中央寄せ */
+.container {
+    max-width: 800px;
+    width: 90%;
+    margin: 60px auto;
+    padding: 40px;
+    background-color: #fff;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+
+/* タイトル */
+h2 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 40px;
+}
+
+/* ラベル */
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* 入力欄 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    margin-bottom: 20px;
+    box-sizing: border-box;
+}
+
+/* エラー表示 */
+.text-danger {
+    color: #bf1928;
+    font-size: 0.9rem;
+    margin-top: -12px;
+    margin-bottom: 12px;
+}
+
+/* ボタン */
+button[type="submit"] {
+    background-color: #f54c40;
+    color: white;
+    border: none;
+    padding: 12px 0;
+    width: 100%;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #f57c73;
+}
+
+/* -------------------
+レスポンシブ対応
+------------------- */
+
+/* PC幅（1400px〜1540px）で崩れないよう調整 */
+@media (min-width: 1400px) and (max-width: 1540px) {
+    .container {
+        max-width: 700px;
+    }
+}
+
+/* タブレット（768px〜850px）対応 */
+@media (min-width: 768px) and (max-width: 850px) {
+    .container {
+        max-width: 600px;
+        padding: 30px;
+    }
+
+    h2 {
+        font-size: 1.6rem;
+    }
+
+    input[type="text"],
+    button[type="submit"] {
+        font-size: 0.95rem;
+    }
+}
+
