@@ -1,0 +1,78 @@
+.verify-container {
+    max-width: 600px;
+    margin: 100px auto;
+    padding: 0 20px; /* 画面幅が狭いときの左右余白 */
+    text-align: center;
+    font-family: sans-serif;
+}
+
+/* タイトル */
+.verify-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+/* サブテキスト */
+.verify-subtext {
+    font-size: 14px;
+    margin-bottom: 40px;
+    color: #000;
+}
+
+/* 中央のグレーボタン */
+.verify-button {
+    background-color: rgb(237, 233, 233);
+    color: #000;
+    padding: 12px 24px;
+    border: 1px solid #000;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    margin-bottom: 20px;
+}
+
+.verify-button:hover {
+    color: rgb(181, 175, 175);
+}
+
+/* 再送リンクボタン */
+.verify-resend-link {
+    background: none;
+    border: none;
+    color: #007BFF;
+    font-size: 14px;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.verify-resend-link:hover {
+    color: #0056b3;
+}
+
+/* ✅ レスポンシブ対応 */
+@media (max-width: 850px) {
+    .verify-container {
+        padding: 0 16px;
+    }
+
+    .verify-title,
+    .verify-subtext {
+        font-size: 15px;
+    }
+
+    .verify-button {
+        font-size: 15px;
+        padding: 10px 20px;
+    }
+
+    .verify-resend-link {
+        font-size: 13px;
+    }
+}
+
+@media (min-width: 1400px) {
+    .verify-container {
+        max-width: 700px;
+    }
+}

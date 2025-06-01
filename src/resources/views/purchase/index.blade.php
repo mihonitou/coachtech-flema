@@ -6,24 +6,24 @@
 
 @section('content')
 
-@if (session('error'))
-<div class="alert__danger">{{ session('error') }}</div>
-@endif
-
 @if (session('success'))
 <div class="alert__message">{{ session('success') }}</div>
 @endif
 
+@if (session('error'))
+<div class="alert__danger">{{ session('error') }}</div>
+@endif
+
 <div class="purchase-container">
 
-    <form method="POST" action="{{ route('purchase.store', ['item' => $item->id]) }}">
+    <form id="purchase-form" method="POST" data-item-id="{{ $item->id }}">
         @csrf
 
         {{-- 左カラム --}}
         <div class="left-column">
             {{-- 商品情報 --}}
             <div class="item-info">
-                <img src="{{ $item->image_path }}" alt="{{ $item->name }}" width="100%">
+                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" width="100%">
                 <h2>{{ $item->name }}</h2>
                 <p>価格：¥{{ number_format($item->price) }}</p>
             </div>
@@ -160,38 +160,66 @@
         const optionsList = selectWrapper.querySelector('.select-options');
         const options = optionsList.querySelectorAll('li');
         const hiddenInput = document.getElementById('paymentInput');
+        const form = document.getElementById('purchase-form');
+        const itemId = form.dataset.itemId; // ← ここで取得
+
 
         // プルダウン開閉
         selected.addEventListener('click', function() {
             optionsList.style.display = optionsList.style.display === 'block' ? 'none' : 'block';
         });
 
-        // 選択肢クリック
+        // 選択肢クリック時の処理
         options.forEach(option => {
             option.addEventListener('click', function() {
                 // すべてリセット
                 options.forEach(opt => {
                     opt.classList.remove('active');
-                    opt.textContent = opt.textContent.replace('✔ ', ''); // チェックマーク削除
+                    opt.textContent = opt.textContent.replace('✔ ', '');
                 });
 
-                // チェックと色を追加
+                // チェックとスタイル追加
                 option.classList.add('active');
-                option.textContent = '✔ ' + option.textContent;
+                option.textContent = '✔ ' + option.dataset.value;
                 selected.textContent = option.textContent;
 
-                // 値をhidden inputに反映
+                // hidden input に選択値をセット
                 hiddenInput.value = option.dataset.value;
+
+                // フォームの action を変更
+                if (option.dataset.value === 'カード払い') {
+                    form.action = `/purchase/checkout/${itemId}`;
+                } else {
+                    form.action = `/purchase/${itemId}`;
+                }
 
                 // プルダウンを閉じる
                 optionsList.style.display = 'none';
             });
         });
 
-        // ページ外クリックで閉じる
+        // ページ外クリックでプルダウンを閉じる
         document.addEventListener('click', function(e) {
             if (!selectWrapper.contains(e.target)) {
                 optionsList.style.display = 'none';
+            }
+        });
+
+        // フォーム送信前にチェック（選択されていなければキャンセル）
+        form.addEventListener('submit', function(e) {
+            if (!hiddenInput.value) {
+                e.preventDefault();
+                alert('支払い方法を選択してください');
+                return;
+            }
+
+            // 念のため action 再設定（信頼性向上のため）
+            if (!form.action.includes('/purchase')) {
+                if (hiddenInput.value === 'カード払い') {
+                    form.action = `/purchase/checkout/${itemId}`;
+                } else {
+                    form.action = `/purchase/${itemId}`;
+                }
             }
         });
     });

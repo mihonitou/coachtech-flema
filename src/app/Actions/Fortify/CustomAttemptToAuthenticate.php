@@ -28,7 +28,18 @@ class CustomAttemptToAuthenticate
             ]);
         }
 
-        // ④ 成功したらセッションを再生成（これは自分でやる）
+        // ④ セッション再生成（Laravel公式推奨）
         $request->session()->regenerate();
+
+        // ⑤ ログインユーザーを取得
+        $user = Auth::guard($guard)->user();
+
+        // ✅ プロフィール未設定ならマイページ編集に遷移
+        if (! $user->postal_code || ! $user->address) {
+            return redirect()->route('mypage.edit');
+        }
+
+        // 🔽 Fortifyがintended('/') にリダイレクトするため null を返す
+        return null;
     }
 }

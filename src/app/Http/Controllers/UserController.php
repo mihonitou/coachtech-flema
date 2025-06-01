@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ProfileRequest;
 use App\Models\User;
+
 
 
 class UserController extends Controller
@@ -40,12 +42,18 @@ class UserController extends Controller
 
         // 画像アップロード処理
         if ($request->hasFile('profile_image')) {
+            // 古い画像を削除
+            if ($user->profile_image && Storage::disk('public')->exists($user->profile_image)) {
+                Storage::disk('public')->delete($user->profile_image);
+            }
+
+            // 新しい画像を保存
             $path = $request->file('profile_image')->store('profile_images', 'public');
             $user->profile_image = $path;
         }
 
+        // 残りの項目を更新
         $user->fill($request->only(['name', 'postal_code', 'address', 'building']))->save();
-
 
         return redirect()->route('mypage')->with('success', 'プロフィールを更新しました。');
     }

@@ -9,7 +9,7 @@
 <div class="item-detail-container">
     {{-- 商品画像 --}}
     <div class="item-image-box">
-        <img src="{{ asset('storage/' . $item->image_path) }}" alt="商品画像" class="item-image">
+        <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="item-image">
     </div>
 
     {{-- 商品情報 --}}

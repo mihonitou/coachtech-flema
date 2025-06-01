@@ -98,18 +98,21 @@ class ItemController extends Controller
     {
         $validated = $request->validated();
 
+        // 画像アップロード
         $imagePath = $request->file('image')->store('item_images', 'public');
 
+        // 商品登録
         $item = Item::create([
             'user_id' => auth()->id(),
-            'image_path' => $imagePath,
+            'image_path' => $imagePath, // ✅ テーブルのカラム名に一致
             'name' => $validated['name'],
-            'brand' => $request->input('brand'), // brandはバリデーション不要ならvalidated外でOK
+            'brand_name' => $request->input('brand'), // ✅ brand_nameに合わせる
             'description' => $validated['description'],
             'price' => $validated['price'],
-            'condition' => $validated['condition'],
+            'status' => $validated['condition'], // ✅ カラム名は status
         ]);
 
+        // カテゴリの関連付け
         $item->categories()->sync($validated['categories']);
 
         return redirect('/')->with('success', '商品を出品しました。');
