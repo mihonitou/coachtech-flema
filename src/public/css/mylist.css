@@ -5,6 +5,7 @@
     font-family: sans-serif;
 }
 
+/* タブメニュー */
 .tab-menu {
     display: flex;
     flex-wrap: wrap;
@@ -34,6 +35,7 @@
     margin-bottom: 20px;
 }
 
+/* 商品がない場合の表示 */
 .no-items {
     text-align: center;
     color: gray;
@@ -41,12 +43,14 @@
     font-size: 16px;
 }
 
+/* 商品グリッド */
 .item-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
     gap: 24px;
 }
 
+/* 商品カード */
 .item-card {
     position: relative;
     border: 1px solid #e0e0e0;
@@ -61,6 +65,7 @@
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
 }
 
+/* 商品画像コンテナ */
 .item-image-container {
     position: relative;
     width: 100%;
@@ -69,6 +74,7 @@
     border-radius: 4px;
 }
 
+/* 商品画像 */
 .item-image {
     position: absolute;
     top: 0; left: 0;
@@ -77,6 +83,7 @@
     object-fit: cover;
 }
 
+/* 売却ラベル */
 .sold-label {
     position: absolute;
     top: 0;
@@ -101,6 +108,7 @@
     font-family: sans-serif;
 }
 
+/* 商品名 */
 .item-name {
     margin-top: 10px;
     font-size: 14px;
@@ -109,11 +117,31 @@
 }
 
 /* ==============================
-   レスポンシブ調整
+   レスポンシブ調整（PC/タブレット）
 ============================== */
 
-/* タブレット（〜1024px） */
-@media screen and (max-width: 1024px) {
+/* PC（1400〜1540px） */
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    .mylist-container {
+        max-width: 1280px;
+    }
+
+    .item-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 28px;
+    }
+
+    .tab {
+        font-size: 18px;
+    }
+
+    .item-name {
+        font-size: 15px;
+    }
+}
+
+/* タブレット（768〜850px） */
+@media screen and (min-width: 768px) and (max-width: 850px) {
     .tab {
         font-size: 16px;
     }
@@ -125,29 +153,5 @@
 
     .item-name {
         font-size: 13px;
-    }
-}
-
-/* スマホ（〜768px） */
-@media screen and (max-width: 768px) {
-    .tab {
-        font-size: 15px;
-    }
-
-    .item-grid {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-        gap: 16px;
-    }
-
-    .item-card {
-        padding: 6px;
-    }
-
-    .item-name {
-        font-size: 12px;
-    }
-
-    .no-items {
-        font-size: 14px;
     }
 }

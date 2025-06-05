@@ -110,27 +110,27 @@ form {
     }
 }
 
-/* スマホ（〜767px） */
-@media screen and (max-width: 767px) {
+/* タブレット狭め（〜850px） */
+@media screen and (max-width: 850px) {
     .header__text {
         font-size: 18px;
     }
 
     form {
-        padding: 20px;
-    }
-
-    .form-group input {
-        font-size: 13px;
-        padding: 8px;
+        padding: 22px;
     }
 
     .btn-login {
         font-size: 14px;
         padding: 10px;
     }
+}
 
-    .form-link a {
-        font-size: 13px;
+
+
+/* PC広め（1400〜1540px）での中央維持 */
+@media screen and (min-width: 1400px) and (max-width: 1540px) {
+    form {
+        margin: 40px auto;
     }
 }

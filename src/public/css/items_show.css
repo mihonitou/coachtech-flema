@@ -7,6 +7,17 @@
     padding: 0 20px;
 }
 
+/* PC向け（明示的にバランスをとる） */
+@media screen and (min-width: 1201px) and (max-width: 1540px) {
+    .item-image-box {
+        flex: 1 1 45%;
+    }
+
+    .item-info-box {
+        flex: 1 1 50%;
+    }
+}
+
 .item-image-box {
     flex: 1 1 40%;
     text-align: center;
@@ -51,7 +62,7 @@
 }
 
 .like-icon.liked {
-    color: #f54c40; /* 赤など、目立つ色 */
+    color: #f54c40;
 }
 
 .comment-icon {
@@ -145,9 +156,7 @@
     margin-top: 1rem;
 }
 
-/* ---------- レスポンシブ ---------- */
-
-/* タブレットサイズ（768〜1024px） */
+/* タブレット（768〜1024px） */
 @media screen and (max-width: 1024px) {
     .item-detail-container {
         flex-direction: column;
@@ -161,29 +170,5 @@
 
     .purchase-btn {
         width: 100%;
-    }
-}
-
-/* スマホサイズ（〜767px） */
-@media screen and (max-width: 767px) {
-    .item-name {
-        font-size: 1.5rem;
-    }
-
-    .item-price {
-        font-size: 1.2rem;
-    }
-
-    .section-title {
-        font-size: 1.1rem;
-    }
-
-    .comment-content {
-        font-size: 0.95rem;
-    }
-
-    .purchase-btn {
-        font-size: 1rem;
-        padding: 0.5rem;
     }
 }

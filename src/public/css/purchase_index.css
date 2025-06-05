@@ -10,6 +10,7 @@
     padding: 40px 20px;
     font-family: "Helvetica Neue", sans-serif;
     color: #333;
+    box-sizing: border-box;
 }
 
 .alert__danger {
@@ -32,11 +33,14 @@
 
 .left-column {
     width: 60%;
+    box-sizing: border-box;
 }
 
 .item-info img {
     border-radius: 8px;
     margin-bottom: 12px;
+    max-width: 100%;
+    height: auto;
 }
 
 .item-info h2 {
@@ -146,6 +150,7 @@
     border-radius: 6px;
     background: #fcfcfc;
     height: fit-content;
+    box-sizing: border-box;
 }
 
 .summary-table {
@@ -182,7 +187,6 @@
     background-color: #f57c73;
 }
 
-/* 他のスタイルの下にこれを追加 */
 .no-shipping-warning {
     color: #bf1928;
     font-size: 14px;
@@ -205,16 +209,4 @@
     }
 }
 
-/* モバイル対応（念のため） */
-@media screen and (max-width: 600px) {
-    .item-info h2,
-    .custom-select-wrapper h3,
-    .shipping-header h3 {
-        font-size: 15px;
-    }
 
-    .purchase-button {
-        font-size: 15px;
-        padding: 10px;
-    }
-}

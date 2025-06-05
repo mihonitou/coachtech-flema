@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 
 Route::get('/', [ItemController::class, 'index'])->name('home');
 Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show');
+Route::post('/item/{item}/like', [ItemController::class, 'toggleLike'])->name('items.toggle_like');
 
 // ✅ メール認証関連のルート（Fortify UI）
 Route::get('/email/verify', function () {
@@ -41,7 +42,7 @@ Route::post('/email/verification-notification', function (Request $request) {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // いいね・コメント・出品
-    Route::post('/item/{item}/like', [ItemController::class, 'toggleLike'])->name('items.toggle_like');
+
     Route::post('/item/{item}/comment', [ItemController::class, 'addComment'])->name('items.comment');
     Route::get('/sell', [ItemController::class, 'create'])->name('sell.create');
     Route::post('/sell', [ItemController::class, 'store'])->name('sell.store');

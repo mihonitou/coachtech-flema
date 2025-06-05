@@ -101,7 +101,24 @@
     .profile-edit-container {
         padding: 15px;
     }
+
     .profile-edit-title {
         font-size: 20px;
+    }
+
+    .input-field,
+    .submit-button {
+        font-size: 15px;
+        padding: 8px 10px;
+    }
+
+    .image-select-button {
+        font-size: 13px;
+        padding: 5px 10px;
+    }
+
+    .profile-image-circle {
+        width: 80px;
+        height: 80px;
     }
 }

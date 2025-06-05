@@ -20,12 +20,10 @@
 
         {{-- いいね・コメントアイコン --}}
         <div class="item-stats">
-            <span
-                id="like-button"
-                class="like-icon {{ $userLiked ? 'liked' : '' }}"
-                data-liked="{{ $userLiked ? '1' : '0' }}"
-                data-item-id="{{ $item->id }}">⭐ <span id="like-count">{{ $likeCount }}</span>
-            </span>
+            <button class="like-button" data-item-id="{{ $item->id }}">
+                <i class="{{ $userLiked ? 'fas' : 'far' }} fa-star"></i>
+                <span class="like-count">{{ $likeCount }}</span>
+            </button>
             <span class="comment-icon">💬 {{ $commentCount }}</span>
         </div>
 
@@ -89,36 +87,42 @@
 @section('js')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const likeButton = document.getElementById('like-button');
-        const likeCountEl = document.getElementById('like-count');
+        document.querySelectorAll('.like-button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const itemId = this.dataset.itemId;
+                const icon = this.querySelector('i');
+                const likeCountSpan = this.querySelector('.like-count');
 
-        likeButton.addEventListener('click', async function() {
-            const itemId = this.dataset.itemId;
-            const liked = this.dataset.liked === '1';
+                fetch(`/items/${itemId}/toggle-like`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: JSON.stringify({})
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        // アイコン切り替え
+                        if (data.status === 'added') {
+                            icon.classList.remove('far');
+                            icon.classList.add('fas');
+                        } else {
+                            icon.classList.remove('fas');
+                            icon.classList.add('far');
+                        }
 
-            try {
-                const res = await fetch(`/items/${itemId}/toggle-like`, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                });
-
-                if (!res.ok) throw new Error('Network response failed');
-
-                const data = await res.json();
-
-                likeCountEl.textContent = data.likeCount;
-                this.dataset.liked = data.status === 'added' ? '1' : '0';
-
-                // 見た目切り替え
-                this.classList.toggle('liked', data.status === 'added');
-            } catch (err) {
-                console.error('Error toggling like:', err);
-            }
+                        // いいね数更新
+                        if (likeCountSpan) {
+                            likeCountSpan.textContent = data.likeCount;
+                        }
+                    })
+                    .catch(error => {
+                        console.error('エラー:', error);
+                    });
+            });
         });
     });
 </script>
+
 @endsection

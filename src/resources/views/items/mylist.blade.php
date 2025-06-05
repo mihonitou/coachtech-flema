@@ -13,7 +13,7 @@
         <a href="{{ route('home') }}" class="tab {{ request('tab') !== 'mylist' ? 'tab-active' : 'tab-inactive' }}">
             おすすめ
         </a>
-        <a href="{{ route('home', ['tab' => 'mylist']) }}" class="tab {{ request('tab') === 'mylist' ? 'tab-active' : 'tab-inactive' }}">
+        <a href="{{ route('home', ['tab' => 'mylist', 'query' => request('query')]) }}" class="tab {{ request('tab') === 'mylist' ? 'tab-active' : 'tab-inactive' }}">
             マイリスト
         </a>
     </div>

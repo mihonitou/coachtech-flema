@@ -13,7 +13,8 @@
         <a href="{{ route('home') }}" class="tab {{ request('tab') !== 'mylist' ? 'tab-active' : 'tab-inactive' }}">
             おすすめ
         </a>
-        <a href="{{ route('home', ['tab' => 'mylist']) }}" class="tab {{ request('tab') === 'mylist' ? 'tab-active' : 'tab-inactive' }}">
+        <a href="{{ route('home', ['tab' => 'mylist', 'query' => request('query')]) }}"
+            class="tab {{ request('tab') === 'mylist' ? 'tab-active' : 'tab-inactive' }}">
             マイリスト
         </a>
     </div>
@@ -31,9 +32,7 @@
         現在、商品はありません。
         @endif
     </p>
-
     @else
-
     <div class="item-grid">
         @foreach ($items as $item)
         <div class="item-card">

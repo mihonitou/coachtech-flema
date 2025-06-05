@@ -14,26 +14,37 @@ class ItemController extends Controller
     public function index(Request $request)
     {
         $tab = $request->query('tab');
+        $query = $request->query('query');
 
         if ($tab === 'mylist') {
-            if (!auth()->check()) {
-                return redirect()->route('login');
-            }
-
-            $user = auth()->user();
-
-            if (method_exists($user, 'favorites')) {
-
-                $items = $user->favorites()->latest()->get();
+            if (Auth::check()) {
+                // ログインユーザーのいいね済み商品
+                $items = auth()->user()->favorites()
+                    ->when($query, function ($q) use ($query) {
+                        $q->where('name', 'like', "%{$query}%");
+                    })
+                    ->latest()->get();
             } else {
-                $items = collect(); // favorites メソッドがなければ空コレクション
+                // 未ログインユーザーのセッション内のいいねIDを取得
+                $likedIds = session()->get('guest_likes', []);
+                $items = Item::whereIn('id', $likedIds)
+                    ->when($query, function ($q) use ($query) {
+                        $q->where('name', 'like', "%{$query}%");
+                    })
+                    ->latest()->get();
             }
+
             return view('items.mylist', compact('items'));
         }
 
-        $items = Item::latest()->get(); // おすすめ
+        // 「おすすめ」一覧（全商品）
+        $items = Item::when($query, function ($q) use ($query) {
+            $q->where('name', 'like', "%{$query}%");
+        })->latest()->get();
+
         return view('items.index', compact('items'));
     }
+
 
 
     public function show(Item $item)
@@ -48,7 +59,7 @@ class ItemController extends Controller
         // 今のユーザーがいいね済みか
         $userLiked = auth()->check()
             ? $item->likes->contains('user_id', auth()->id())
-            : false;
+            : in_array($item->id, session('guest_likes', []));
 
         return view('items.show', compact(
             'item',
@@ -60,24 +71,37 @@ class ItemController extends Controller
 
     public function toggleLike(Item $item)
     {
-        $user = Auth::user();
-
-        // すでにいいね済みなら解除、そうでなければ追加
-        $existing = $item->likes()->where('user_id', $user->id);
-        if ($existing->exists()) {
-            $existing->delete();
-            $status = 'removed';
+        if (Auth::check()) {
+            $user = Auth::user();
+            $existing = $item->likes()->where('user_id', $user->id);
+            if ($existing->exists()) {
+                $existing->delete();
+                $status = 'removed';
+            } else {
+                $item->likes()->create(['user_id' => $user->id]);
+                $status = 'added';
+            }
         } else {
-            $item->likes()->create(['user_id' => $user->id]);
-            $status = 'added';
+            // 未ログインユーザーはセッションで管理
+            $likedItems = session()->get('guest_likes', []);
+
+            if (in_array($item->id, $likedItems)) {
+                $likedItems = array_diff($likedItems, [$item->id]);
+                $status = 'removed';
+            } else {
+                $likedItems[] = $item->id;
+                $status = 'added';
+            }
+
+            session(['guest_likes' => array_values($likedItems)]);
         }
 
-        // 最新のいいね数を返す
         return response()->json([
-            'status'    => $status,
+            'status' => $status,
             'likeCount' => $item->likes()->count(),
         ]);
     }
+
 
     public function addComment(CommentRequest $request, Item $item)
     {

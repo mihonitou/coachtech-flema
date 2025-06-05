@@ -1,3 +1,5 @@
+/* register.css */
+
 .header__wrap {
     text-align: center;
     margin-top: 20px;
@@ -81,10 +83,10 @@ input[type="password"] {
 }
 
 /* ======================
-   レスポンシブ対応 
+   レスポンシブ対応
 =======================*/
 
-/* タブレット（〜1024px） */
+/* タブレット（768px〜1024px） */
 @media screen and (max-width: 1024px) {
     form {
         width: 90%;
@@ -96,30 +98,14 @@ input[type="password"] {
     }
 }
 
-/* スマホ（〜767px） */
-@media screen and (max-width: 767px) {
+/* PC（1200px〜） ※1400-1540px 安定表示対策 */
+@media screen and (min-width: 1200px) {
     form {
-        width: 95%;
-        padding: 20px;
+        width: 400px;
+        padding: 40px;
     }
 
     .header__text {
-        font-size: 16px;
-    }
-
-    .btn-register {
-        padding: 10px;
-        font-size: 15px;
-    }
-
-    .form-link a {
-        font-size: 13px;
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"] {
-        font-size: 13px;
-        padding: 8px;
+        font-size: 20px;
     }
 }
