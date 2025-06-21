@@ -53,8 +53,14 @@ class UserController extends Controller
         }
 
         // 残りの項目を更新
-        $user->fill($request->only(['name', 'postal_code', 'address', 'building']))->save();
+        $user->fill($request->only(['name', 'postal_code', 'address', 'building']));
 
-        return redirect()->route('mypage')->with('success', 'プロフィールを更新しました。');
+        // プロフィール完了フラグを true に
+        $user->profile_completed = true;
+
+        // 保存
+        $user->save();
+
+        return redirect()->route('/')->with('success', 'プロフィールを更新しました。');
     }
 }

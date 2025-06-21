@@ -2,23 +2,25 @@
 
 namespace App\Actions\Fortify;
 
-use Illuminate\Http\Request;
 use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Laravel\Fortify\Fortify;
 
 class CustomAttemptToAuthenticate
 {
-    public function handle(Request $request)
+    public function __invoke(LoginRequest $request)
     {
-        // ① バリデーションを実行（LoginRequest）
-        app(LoginRequest::class);
+        // ✅ 明示的にバリデーションを実行
+        $request->validate(
+            $request->rules(),
+            $request->messages(),
+            $request->attributes()
+        );
 
-        // ② Fortifyの guard を取得
+        // Fortifyの guard を取得
         $guard = config('fortify.guard');
 
-        // ③ 認証試行
+        // 認証試行
         if (! Auth::guard($guard)->attempt(
             $request->only('email', 'password'),
             $request->boolean('remember')
@@ -28,18 +30,18 @@ class CustomAttemptToAuthenticate
             ]);
         }
 
-        // ④ セッション再生成（Laravel公式推奨）
+        // セッション再生成
         $request->session()->regenerate();
 
-        // ⑤ ログインユーザーを取得
+        // ログインユーザー取得
         $user = Auth::guard($guard)->user();
 
-        // ✅ プロフィール未設定ならマイページ編集に遷移
+        // プロフィール未設定ならマイページ編集へリダイレクト
         if (! $user->postal_code || ! $user->address) {
             return redirect()->route('mypage.edit');
         }
 
-        // 🔽 Fortifyがintended('/') にリダイレクトするため null を返す
+        // 通常は intended('/') にリダイレクトされる
         return null;
     }
 }

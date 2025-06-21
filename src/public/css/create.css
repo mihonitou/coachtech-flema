@@ -8,6 +8,7 @@
 .sell-title {
     font-size: 28px;
     margin-bottom: 20px;
+    text-align: center;
 }
 
 .form-block {
@@ -27,6 +28,7 @@
 }
 
 /* 成功メッセージ */
+/* クラス名を alert-message に修正 */
 .alert__message {
     color: #155724;
     background-color: #d4edda;
@@ -43,6 +45,7 @@
     font-size: 16px;
     border-radius: 6px;
     border: 1px solid #ccc;
+    box-sizing: border-box; /* 追加 */
 }
 
 .form-textarea {
@@ -72,16 +75,28 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid #f54c40;
+    margin: 0 auto;
+    border: 2px solid #ccc;
     background-color: #fff;
     height: 120px;
     cursor: pointer;
     border-radius: 6px;
+    transition: border-color 0.3s, background-color 0.3s; /* 追加 */
+}
+
+.image-upload-box:hover {
+    border-color: #f57c73; /* 追加 */
+    background-color: #fff7f7; /* 追加 */
 }
 
 .image-label {
     color: #f54c40;
-    font-size: 16px;
+    font-size: 14px;
+    text-align: center;
+    cursor: pointer;
+    border: 2px solid #f54c40; /* ← 赤い枠線を追加 */
+    padding: 8px 16px; /* ← テキスト周囲に余白を追加 */
+    border-radius: 4px; /* ← 少し丸みをつける（任意） */
 }
 
 .hidden-input {
@@ -96,23 +111,31 @@
 }
 
 .tag {
+    display: inline-flex;
+    align-items: center;
     border: 2px solid #f54c40;
     color: #f54c40;
     background-color: #fff;
     padding: 6px 12px;
     border-radius: 20px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
     user-select: none;
+    font-size: 14px;
 }
 
-.tag:hover {
-    background-color: #f54c40;
-    color: #fff;
-}
+
 
 .tag input {
     display: none;
+}
+
+.tag input:checked + span {
+    background-color: #f54c40;
+    color: #fff;
+    border-color: #f54c40;
+    border-radius: 20px;
+    padding: 6px 12px;
 }
 
 /* 出品ボタン */
@@ -130,6 +153,56 @@
 
 .submit-button:hover {
     background-color: #f57c73;
+}
+
+/* カスタムセレクト */
+.custom-select-wrapper {
+    position: relative;
+    width: 100%;
+    cursor: pointer;
+}
+
+.custom-select-trigger {
+    padding: 10px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+    color: #333;
+}
+
+.custom-options {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #444;
+    border: 1px solid #ccc;
+    border-top: none;
+    z-index: 999;
+    display: none;
+    border-radius: 0 0 6px 6px;
+    overflow: hidden;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.custom-option {
+    padding: 12px;
+    color: #fff;
+    background-color: #a1a0a0;
+    cursor: pointer;
+    border-bottom: 1px solid #888;
+    transition: background-color 0.2s;
+    text-align: left;
+}
+
+
+.custom-option.selected {
+    background-color: #00aaff;
+    color: #fff;
 }
 
 /* レスポンシブ */

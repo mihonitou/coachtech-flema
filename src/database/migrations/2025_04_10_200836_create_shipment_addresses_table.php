@@ -15,9 +15,18 @@ class CreateShipmentAddressesTable extends Migration
     {
         Schema::create('shipment_addresses', function (Blueprint $table) {
             $table->id();
+            // ユーザーID（新規追加）
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
+            // 商品ID（新規追加）
+            $table->foreignId('item_id')
+                ->constrained()
+                ->onDelete('cascade');
             $table->foreignId('purchase_id') // 外部キー → purchases(id)
                 ->constrained()
                 ->onDelete('cascade');
+
 
             $table->string('postal_id', 10);     // 郵便番号（NOT NULL）
             $table->text('address');             // 住所（NOT NULL）

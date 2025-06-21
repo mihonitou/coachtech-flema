@@ -21,21 +21,17 @@
 
     {{-- 商品一覧 --}}
     @if ($items->isEmpty())
-    <p class="no-items">現在、いいねした商品はありません。</p>
+    <p class="no-items">
+        @if (!empty(request('query')))
+        該当する商品が見つかりませんでした。
+        @else
+        現在、いいねした商品はありません。
+        @endif
+    </p>
     @else
     <div class="item-grid">
         @foreach ($items as $item)
-        <div class="item-card">
-            <div class="item-image-container">
-                <a href="{{ route('items.show', $item) }}">
-                    <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="item-image">
-                </a>
-                @if ($item->isSold())
-                <span class="sold-label"></span>
-                @endif
-            </div>
-            <div class="item-name">{{ $item->name }}</div>
-        </div>
+        @include('components.item_card', ['item' => $item])
         @endforeach
     </div>
     @endif

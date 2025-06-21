@@ -5,9 +5,10 @@
     <meta charset="UTF-8">
     <title>@yield('title', 'COACHTECH Flema')</title>
     <link rel="stylesheet" href="{{ asset('css/sanitize.css') }}">
+    @yield('css')
     <link rel="stylesheet" href="{{ asset('css/common.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    @yield('css')
+
 </head>
 
 <body>
@@ -26,7 +27,7 @@
                 @auth
                 <form method="POST" action="{{ route('logout') }}" onsubmit="return confirm('ログアウトしますか？')">
                     @csrf
-                    <button type="submit" class="nav__link">ログアウト</button>
+                    <button type="submit" class="nav__link nav__logout">ログアウト</button>
                 </form>
                 @else
                 <a href="{{ route('login') }}" class="nav__link">ログイン</a>

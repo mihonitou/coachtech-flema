@@ -21,7 +21,12 @@ class CreateItemsTable extends Migration
             $table->string('name');
             $table->text('description');
             $table->integer('price');
-            $table->enum('status', ['new', 'used']);
+            $table->enum('status', [
+                '良好',
+                '目立った傷や汚れなし',
+                'やや傷や汚れあり',
+                '状態が悪い',
+            ]);
             $table->string('brand_name')->nullable();
             $table->string('image_path');
             $table->boolean('sold');

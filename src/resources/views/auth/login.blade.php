@@ -24,12 +24,12 @@
 
     <div class="form-group">
         <label for="email">メールアドレス</label>
-        <input type="email" name="email" id="email" value="{{ old('email') }}" required autofocus>
+        <input type="email" name="email" id="email" value="{{ old('email') }}">
     </div>
 
     <div class="form-group">
         <label for="password">パスワード</label>
-        <input type="password" name="password" id="password" required>
+        <input type="password" name="password" id="password">
     </div>
 
     <div class="form-group">

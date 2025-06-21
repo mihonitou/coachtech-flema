@@ -48,6 +48,11 @@ class Item extends Model
         return $this->hasOne(Purchase::class);
     }
 
+    public function shipmentAddresses()
+    {
+        return $this->hasMany(ShipmentAddress::class);
+    }
+
     // カテゴリとの中間テーブル（N:N）
     public function categories()
     {

@@ -9,7 +9,8 @@
 <div class="item-detail-container">
     {{-- 商品画像 --}}
     <div class="item-image-box">
-        <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" class="item-image">
+        <img src="{{ Str::startsWith($item->image_path, 'http') ? $item->image_path : asset('storage/' . $item->image_path) }}"
+            alt="{{ $item->name }}" class="item-image">
     </div>
 
     {{-- 商品情報 --}}
@@ -18,14 +19,21 @@
         <div class="brand-name">{{ $item->brand_name }}</div>
         <div class="item-price">¥{{ number_format($item->price) }} <span class="tax">（税込）</span></div>
 
-        {{-- いいね・コメントアイコン --}}
+        {{-- いいね & コメント数セクション --}}
         <div class="item-stats">
-            <button class="like-button" data-item-id="{{ $item->id }}">
+            {{-- いいねボタン：ログイン状態に応じてdata属性付与 --}}
+            <button class="like-button"
+                @auth data-item-id="{{ $item->id }}" @endauth>
                 <i class="{{ $userLiked ? 'fas' : 'far' }} fa-star"></i>
                 <span class="like-count">{{ $likeCount }}</span>
             </button>
+
+            {{-- コメント数：クリックできないただの表示 --}}
             <span class="comment-icon">💬 {{ $commentCount }}</span>
         </div>
+
+        {{-- CSRFトークンをJSで使えるようにmetaタグで埋め込み --}}
+        <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <a href="{{ route('purchase.show', $item->id) }}" class="purchase-btn">購入手続きへ</a>
 
@@ -87,23 +95,38 @@
 @section('js')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.like-button').forEach(function(button) {
+        const likeButtons = document.querySelectorAll('.like-button');
+
+        likeButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const itemId = this.dataset.itemId;
+
+                console.log('itemId:', itemId); // ★ 追加
+                // 未ログインの場合（data-item-idが存在しない） → 何もしない
+                if (!itemId) {
+                    console.log('ログインしていないため処理をスキップ');
+                    return;
+                }
+
                 const icon = this.querySelector('i');
                 const likeCountSpan = this.querySelector('.like-count');
 
-                fetch(`/items/${itemId}/toggle-like`, {
+                fetch(`/item/${itemId}/like`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
                         },
                         body: JSON.stringify({})
                     })
-                    .then(response => response.json())
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('いいね処理失敗');
+                        }
+                        return response.json();
+                    })
                     .then(data => {
-                        // アイコン切り替え
+                        // アイコンのクラス切り替え
                         if (data.status === 'added') {
                             icon.classList.remove('far');
                             icon.classList.add('fas');
@@ -112,13 +135,13 @@
                             icon.classList.add('far');
                         }
 
-                        // いいね数更新
+                        // いいね数の更新
                         if (likeCountSpan) {
                             likeCountSpan.textContent = data.likeCount;
                         }
                     })
                     .catch(error => {
-                        console.error('エラー:', error);
+                        console.error('通信エラー:', error);
                     });
             });
         });

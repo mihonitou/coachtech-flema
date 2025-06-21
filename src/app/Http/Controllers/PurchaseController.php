@@ -20,15 +20,18 @@ class PurchaseController extends Controller
     {
         $user = Auth::user();
 
-        // 住所：セッション or DB or プロフィール
-        $shippingAddress = ShipmentAddress::where('item_id', $item->id)->first();
+        // 購入レコードから住所取得（未購入なら null）
+        $purchase = Purchase::where('user_id', $user->id)
+            ->where('item_id', $item->id)
+            ->with('shipmentAddress')
+            ->first();
 
-        return view('purchase.index', [
-            'item' => $item,
-            'user' => $user,
-            'shippingAddress' => $shippingAddress,
-        ]);
+        // PHP 7.x 対応の書き方
+        $shippingAddress = $purchase ? $purchase->shipmentAddress : null;
+
+        return view('purchase.index', compact('item', 'user', 'shippingAddress'));
     }
+
 
     // 購入処理
     public function store(PurchaseRequest $request, Item $item)
@@ -149,11 +152,11 @@ class PurchaseController extends Controller
 
     public function editAddress(Item $item)
     {
-        $purchase = Purchase::where('item_id', $item->id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail(); // ← 購入履歴がなければ404
+        // ログインユーザーがこの商品に設定していた住所（購入前でもOK）を取得
+        $shippingAddress = ShipmentAddress::where('user_id', Auth::id())
+            ->where('item_id', $item->id)
+            ->first();
 
-        $shippingAddress = $purchase->shipmentAddress;
 
         return view('purchase.address', [
             'item' => $item,
@@ -167,10 +170,19 @@ class PurchaseController extends Controller
             ->where('user_id', Auth::id())
             ->firstOrFail();
 
-        $shippingAddress = $purchase->shipmentAddress;
+        $data = $request->only(['postal_code', 'address', 'building']);
 
-        $shippingAddress->update($request->only(['postal_code', 'address', 'building']));
+        // 住所が既にあるか確認
+        if ($purchase->shipmentAddress) {
+            // 更新
+            $purchase->shipmentAddress->update($data);
+        } else {
+            // 新規作成
+            $purchase->shipmentAddress()->create($data);
+        }
 
-        return redirect()->route('purchases.index')->with('success', '住所を更新しました');
+        return redirect()
+            ->route('purchase.show', ['item' => $item->id])
+            ->with('success', '住所を更新しました');
     }
 }

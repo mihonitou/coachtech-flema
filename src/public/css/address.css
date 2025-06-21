@@ -55,7 +55,7 @@ input[type="number"] {
 }
 
 /* ボタン */
-button[type="submit"] {
+.btn.btn-danger {
     background-color: #f54c40;
     color: white;
     border: none;
@@ -67,7 +67,7 @@ button[type="submit"] {
     transition: background-color 0.3s ease;
 }
 
-button[type="submit"]:hover {
+.btn.btn-danger:hover {
     background-color: #f57c73;
 }
 

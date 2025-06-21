@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@php
+use Illuminate\Support\Str;
+@endphp
+
 @section('css')
 <link rel="stylesheet" href="{{ asset('css/purchase_index.css') }}">
 @endsection
@@ -16,19 +20,22 @@
 
 <div class="purchase-container">
 
-    <form id="purchase-form" method="POST" data-item-id="{{ $item->id }}">
-        @csrf
 
-        {{-- 左カラム --}}
-        <div class="left-column">
-            {{-- 商品情報 --}}
-            <div class="item-info">
-                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->name }}" width="100%">
-                <h2>{{ $item->name }}</h2>
-                <p>価格：¥{{ number_format($item->price) }}</p>
-            </div>
+    {{-- 左カラム --}}
+    <div class="left-column">
+        {{-- 商品情報 --}}
+        <div class="item-info">
+            <img src="{{ Str::startsWith($item->image_path, ['http://', 'https://']) ? $item->image_path : asset('storage/' . $item->image_path) }}"
+                alt="{{ $item->name }}"
+                width="100%">
+            <h2>{{ $item->name }}</h2>
+            <p>価格：¥{{ number_format($item->price) }}</p>
+        </div>
 
-            <div class="section-divider"></div>
+        <div class="section-divider"></div>
+
+        <form id="purchase-form" method="POST" action="{{ route('purchase.store', ['item' => $item->id]) }}" data-item-id="{{ $item->id }}">
+            @csrf
 
             <div class="custom-select-wrapper">
                 <h3>支払い方法</h3>
@@ -53,14 +60,15 @@
             {{-- 配送先フォーム --}}
             <div class="shipping-address">
                 <div class="shipping-header">
+                    <p>確認用: 商品ID = {{ $item->id }}</p>
                     <h3>配送先</h3>
                     <a href="{{ route('purchase.address.edit', ['item' => $item->id]) }}" class="change-address-link">変更する</a>
                 </div>
 
                 {{-- 配送先未登録メッセージ --}}
                 @if (
-                empty(old('postal_code')) && empty($shippingAddress?->postal_code) && empty($user->postal_code)
-                || empty(old('address')) && empty($shippingAddress?->address) && empty($user->address)
+                empty(old('postal_code')) && empty(optional($shippingAddress)->postal_code) && empty($user->postal_code)
+                || empty(old('address')) && empty(optional($shippingAddress)->address) && empty($user->address)
                 )
                 <div class="no-shipping-warning">※ まだ配送先が登録されていません。</div>
                 @endif
@@ -71,14 +79,14 @@
                     <span>
                         @if (old('postal_code'))
                         {{ old('postal_code') }}
-                        @elseif (!empty($shippingAddress?->postal_code))
-                        {{ $shippingAddress->postal_code }}
+                        @elseif (!empty(optional($shippingAddress)->postal_code))
+                        {{ optional($shippingAddress)->postal_code }}
                         @else
                         {{ $user->postal_code }}
                         @endif
                     </span>
                     <input type="hidden" name="postal_code"
-                        value="{{ old('postal_code') ?? $shippingAddress?->postal_code ?? $user->postal_code }}">
+                        value="{{ old('postal_code') ?? optional($shippingAddress)->postal_code ?? $user->postal_code }}">
                 </div>
 
                 {{-- 住所 --}}
@@ -87,14 +95,14 @@
                     <span>
                         @if (old('address'))
                         {{ old('address') }}
-                        @elseif (!empty($shippingAddress?->address))
-                        {{ $shippingAddress->address }}
+                        @elseif (!empty(optional($shippingAddress)->address))
+                        {{ optional($shippingAddress)->address }}
                         @else
                         {{ $user->address }}
                         @endif
                     </span>
                     <input type="hidden" name="address"
-                        value="{{ old('address') ?? $shippingAddress?->address ?? $user->address }}">
+                        value="{{ old('address') ?? optional($shippingAddress)->address ?? $user->address }}">
                 </div>
 
                 {{-- 建物名（任意）--}}
@@ -103,14 +111,14 @@
                     <span>
                         @if (old('building'))
                         {{ old('building') }}
-                        @elseif (!empty($shippingAddress?->building))
-                        {{ $shippingAddress->building }}
+                        @elseif (!empty(optional($shippingAddress)->building))
+                        {{ optional($shippingAddress)->building }}
                         @else
                         {{ $user->building ?? '' }}
                         @endif
                     </span>
                     <input type="hidden" name="building"
-                        value="{{ old('building') ?? $shippingAddress?->building ?? $user->building }}">
+                        value="{{ old('building') ?? optional($shippingAddress)->building ?? $user->building }}">
                 </div>
 
                 {{-- 送付先IDがあれば hidden で送信 --}}
@@ -118,34 +126,35 @@
                 <input type="hidden" name="shipment_address_id" value="{{ $shippingAddress->id }}">
                 @endif
             </div>
+        </form> {{-- ← formはここで閉じる --}}
+    </div>
 
-        </div>
+    {{-- 右カラム --}}
+    <div class="purchase-summary">
+        <table class="summary-table">
+            <tr>
+                <th>商品代金</th>
+                <td>¥{{ number_format($item->price) }}</td>
+            </tr>
+            <tr>
+                <th>支払い方法</th>
+                <td id="payment-method-display">
+                    @if(old('payment_method'))
+                    {{ old('payment_method') }}
+                    @elseif(isset($shippingAddress) && optional($shippingAddress)->payment_method)
+                    {{ optional($shippingAddress)->payment_method }}
+                    @else
+                    未選択
+                    @endif
+                </td>
+            </tr>
+        </table>
 
-        {{-- 右カラム --}}
-        <div class="purchase-summary">
-            <table class="summary-table">
-                <tr>
-                    <th>商品代金</th>
-                    <td>¥{{ number_format($item->price) }}</td>
-                </tr>
-                <tr>
-                    <th>支払い方法</th>
-                    <td>
-                        @if(old('payment_method'))
-                        {{ old('payment_method') }}
-                        @elseif(isset($shippingAddress) && $shippingAddress->payment_method)
-                        {{ $shippingAddress->payment_method }}
-                        @else
-                        未選択
-                        @endif
-                    </td>
-                </tr>
-            </table>
+        {{-- formの外だが、form属性で紐付けて送信可能に --}}
+        <button type="submit" form="purchase-form" class="purchase-button">購入する</button>
+    </div>
 
-            <button type="submit" class="purchase-button">購入する</button>
-        </div>
 
-    </form>
 
 </div>
 
@@ -180,11 +189,17 @@
 
                 // チェックとスタイル追加
                 option.classList.add('active');
-                option.textContent = '✔ ' + option.dataset.value;
-                selected.textContent = option.textContent;
+                option.textContent = option.dataset.value; // ✔ を付けないで戻す
+                selected.textContent = '✔ ' + option.dataset.value; // ✔ は選択中表示だけに
 
                 // hidden input に選択値をセット
                 hiddenInput.value = option.dataset.value;
+
+                // 支払い方法表示欄にもリアルタイム反映 ←★この行を追加★
+                const methodDisplay = document.getElementById('payment-method-display');
+                if (methodDisplay) {
+                    methodDisplay.textContent = option.dataset.value;
+                }
 
                 // フォームの action を変更
                 if (option.dataset.value === 'カード払い') {

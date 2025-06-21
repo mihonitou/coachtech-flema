@@ -13,38 +13,40 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
+
 use Laravel\Fortify\Fortify;
-
-
 use Laravel\Fortify\Contracts\RegisterResponse;
-use Illuminate\Http\RedirectResponse;
+use Laravel\Fortify\Contracts\LoginResponse;
+
+use App\Http\Responses\CustomRegisterResponse;
+use App\Http\Responses\CustomLoginResponse;
+
+use App\Http\Requests\LoginRequest;
+use Illuminate\Support\Facades\App;
 
 class FortifyServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
     public function register(): void
     {
-        $this->app->singleton(
-            RegisterResponse::class,
-            CustomRegisterResponse::class
-        );
+        // 会員登録後のリダイレクト先をカスタマイズ
+        $this->app->singleton(RegisterResponse::class, CustomRegisterResponse::class);
+
+        // ログイン後のリダイレクト先をカスタマイズ
+        $this->app->singleton(LoginResponse::class, CustomLoginResponse::class);
     }
 
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
+        Fortify::ignoreRoutes(); // ← 追加
+
+
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
         Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
-            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())).'|'.$request->ip());
-
+            $throttleKey = Str::transliterate(Str::lower($request->input(Fortify::username())) . '|' . $request->ip());
             return Limit::perMinute(5)->by($throttleKey);
         });
 
@@ -53,22 +55,13 @@ class FortifyServiceProvider extends ServiceProvider
         });
 
         Fortify::registerView(function () {
-            return view('auth.register'); // register.blade.php を読み込むように
+            return view('auth.register');
         });
 
         Fortify::loginView(function () {
-            return view('auth.login'); // login.blade.php を作る想定
+            return view('auth.login');
         });
 
-        Fortify::authenticateUsing(function (Request $request) {
-            return app(CustomAttemptToAuthenticate::class)->handle($request);
-        });
-    }
-}
-class CustomRegisterResponse implements RegisterResponse
-{
-    public function toResponse($request): RedirectResponse
-    {
-        return redirect('/mypage/profile');
+
     }
 }

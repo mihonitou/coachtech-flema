@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\CommentRequest;
 use App\Http\Requests\ExhibitionRequest;
 
+use Illuminate\Support\Facades\Log;
+
 class ItemController extends Controller
 {
     public function index(Request $request)
@@ -18,14 +20,16 @@ class ItemController extends Controller
 
         if ($tab === 'mylist') {
             if (Auth::check()) {
-                // ログインユーザーのいいね済み商品
+                // ログインユーザーの「いいね」かつ自分の出品以外
                 $items = auth()->user()->favorites()
+                    ->where('items.user_id', '<>', auth()->id())
                     ->when($query, function ($q) use ($query) {
-                        $q->where('name', 'like', "%{$query}%");
+                        $q->where('items.name', 'like', "%{$query}%");
                     })
-                    ->latest()->get();
+                    ->latest('items.created_at')
+                    ->get();
             } else {
-                // 未ログインユーザーのセッション内のいいねIDを取得
+                // 未ログインユーザー：セッションに保存されたIDから
                 $likedIds = session()->get('guest_likes', []);
                 $items = Item::whereIn('id', $likedIds)
                     ->when($query, function ($q) use ($query) {
@@ -37,10 +41,16 @@ class ItemController extends Controller
             return view('items.mylist', compact('items'));
         }
 
-        // 「おすすめ」一覧（全商品）
-        $items = Item::when($query, function ($q) use ($query) {
-            $q->where('name', 'like', "%{$query}%");
-        })->latest()->get();
+
+        // おすすめタブ（自分の出品を除外）
+        $items = Item::when(auth()->check(), function ($q) {
+            $q->where('user_id', '<>', auth()->id());
+        })
+            ->when($query, function ($q) use ($query) {
+                $q->where('name', 'like', "%{$query}%");
+            })
+            ->latest()
+            ->get();
 
         return view('items.index', compact('items'));
     }
@@ -71,29 +81,31 @@ class ItemController extends Controller
 
     public function toggleLike(Item $item)
     {
-        if (Auth::check()) {
-            $user = Auth::user();
-            $existing = $item->likes()->where('user_id', $user->id);
-            if ($existing->exists()) {
-                $existing->delete();
-                $status = 'removed';
-            } else {
-                $item->likes()->create(['user_id' => $user->id]);
-                $status = 'added';
-            }
+        Log::info('toggleLike start. item_id: ' . $item->id . ', user_id: ' . Auth::id());
+
+
+        // 未ログインなら401 Unauthorizedを返す（保険）
+        if (!Auth::check()) {
+            return response()->json([
+                'message' => 'ログインが必要です。',
+            ], 401);
+        }
+
+        $user = Auth::user();
+
+        // 既にいいね済みか確認
+        $existing = $item->likes()->where('user_id', $user->id);
+
+        if ($existing->exists()) {
+            // いいねを解除
+            $existing->delete();
+            $status = 'removed';
         } else {
-            // 未ログインユーザーはセッションで管理
-            $likedItems = session()->get('guest_likes', []);
-
-            if (in_array($item->id, $likedItems)) {
-                $likedItems = array_diff($likedItems, [$item->id]);
-                $status = 'removed';
-            } else {
-                $likedItems[] = $item->id;
-                $status = 'added';
-            }
-
-            session(['guest_likes' => array_values($likedItems)]);
+            // いいねを追加
+            $item->likes()->create([
+                'user_id' => $user->id,
+            ]);
+            $status = 'added';
         }
 
         return response()->json([
@@ -115,7 +127,7 @@ class ItemController extends Controller
 
     public function create()
     {
-        return view('sell.create'); // 出品画面 Blade
+        return view('items.create'); // 出品画面 Blade
     }
 
     public function store(ExhibitionRequest $request)

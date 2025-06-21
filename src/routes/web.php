@@ -1,9 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth; // ← ここに追加
 use App\Http\Controllers\ItemController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\Auth\LoginController; // ← 追加
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
 /*
@@ -20,7 +22,21 @@ use Illuminate\Http\Request;
 
 Route::get('/', [ItemController::class, 'index'])->name('home');
 Route::get('/item/{item}', [ItemController::class, 'show'])->name('items.show');
-Route::post('/item/{item}/like', [ItemController::class, 'toggleLike'])->name('items.toggle_like');
+
+
+// ✅ ログインルートをここに追加（Fortifyによるログイン処理を置き換える）
+Route::get('/login', fn() => view('auth.login'))->name('login');
+Route::post('/login', [LoginController::class, 'store']);
+
+// ✅ ログアウトルート（← ここを追加！）
+Route::post('/logout', function () {
+    Auth::logout();
+    request()->session()->invalidate();
+    request()->session()->regenerateToken();
+
+    return redirect('/'); // ← 商品一覧（ログイン前）へリダイレクト
+})->name('logout');
+
 
 // ✅ メール認証関連のルート（Fortify UI）
 Route::get('/email/verify', function () {
@@ -42,7 +58,7 @@ Route::post('/email/verification-notification', function (Request $request) {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     // いいね・コメント・出品
-
+    Route::post('/item/{item}/like', [ItemController::class, 'toggleLike'])->name('items.toggle_like');
     Route::post('/item/{item}/comment', [ItemController::class, 'addComment'])->name('items.comment');
     Route::get('/sell', [ItemController::class, 'create'])->name('sell.create');
     Route::post('/sell', [ItemController::class, 'store'])->name('sell.store');
@@ -58,6 +74,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/purchase/address/{item}', [PurchaseController::class, 'editAddress'])->name('purchase.address.edit');
     // 更新用: 送信された住所を保存
     Route::put('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->name('purchase.address.update');
+
+    // 一時的なテスト用ルート（追記）
+    Route::post('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->name('purchase.address.update.test');
 
     // マイページ関連
     Route::get('/mypage', [UserController::class, 'show'])->name('mypage');
