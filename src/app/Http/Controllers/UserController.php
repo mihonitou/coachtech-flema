@@ -61,6 +61,6 @@ class UserController extends Controller
         // 保存
         $user->save();
 
-        return redirect()->route('/')->with('success', 'プロフィールを更新しました。');
+        return redirect()->route('home')->with('success', 'プロフィールを更新しました。');
     }
 }

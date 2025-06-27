@@ -28,7 +28,7 @@ class CreateShipmentAddressesTable extends Migration
                 ->onDelete('cascade');
 
 
-            $table->string('postal_id', 10);     // 郵便番号（NOT NULL）
+            $table->string('postal_code', 10);     // 郵便番号（NOT NULL）
             $table->text('address');             // 住所（NOT NULL）
             $table->string('building')->nullable(); // 建物名（NULL許可）
             $table->timestamps();

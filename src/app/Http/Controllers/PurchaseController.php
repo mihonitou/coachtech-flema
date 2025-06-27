@@ -9,6 +9,7 @@ use App\Models\Purchase;
 use App\Models\ShipmentAddress; // ← 修正ポイント
 use App\Http\Requests\PurchaseRequest;
 use App\Http\Requests\AddressRequest;
+use Illuminate\Support\Facades\Log; // ← これを追加！
 use Stripe\Stripe;
 use Stripe\Checkout\Session as StripeSession;
 use Illuminate\Support\Facades\URL;
@@ -66,6 +67,7 @@ class PurchaseController extends Controller
 
     public function checkout(PurchaseRequest $request, Item $item)
     {
+
         if ($item->is_sold) {
             return redirect()->route('items.index')->with('error', 'この商品はすでに購入されています。');
         }
@@ -83,7 +85,7 @@ class PurchaseController extends Controller
                     'name' => $item->name,
                     'description' => $item->description,
                 ],
-                'unit_amount' => $item->price * 100, // 円→最小単位（例：100円 → 10000）
+                'unit_amount' => $item->price
             ],
             'quantity' => 1,
         ]];
@@ -111,6 +113,7 @@ class PurchaseController extends Controller
         ]);
 
         return redirect($session->url);
+
     }
 
     public function success(Item $item)
@@ -166,6 +169,7 @@ class PurchaseController extends Controller
 
     public function updateAddress(AddressRequest $request, Item $item)
     {
+        Log::info('★★★ updateAddress アクション呼び出し確認 ★★★');
         $purchase = Purchase::where('item_id', $item->id)
             ->where('user_id', Auth::id())
             ->firstOrFail();
@@ -181,8 +185,9 @@ class PurchaseController extends Controller
             $purchase->shipmentAddress()->create($data);
         }
 
+        // 修正後（edit画面にリダイレクト）
         return redirect()
-            ->route('purchase.show', ['item' => $item->id])
+            ->route('purchase.address.edit', ['item' => $item->id])
             ->with('success', '住所を更新しました');
     }
 }

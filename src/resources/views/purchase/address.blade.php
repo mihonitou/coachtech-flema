@@ -6,21 +6,25 @@
 @endsection
 
 @section('content')
+
+@if (session('success'))
+<div class="alert__message">{{ session('success') }}</div>
+@endif
+
 <div class="container">
     <h2 class="text-center my-4">住所の変更</h2>
 
-    <p>送信先: {{ route('purchase.address.update.test', ['item' => $item->id]) }}</p>
 
-    <form action="{{ route('purchase.address.update.test', ['item' => $item->id]) }}" method="POST">
+
+    <form action="{{ route('purchase.address.update.fallback', ['item' => $item->id]) }}" method="POST">
         @csrf
-        {{-- 一時的にPUTは使わない --}}
-        {{-- @method('PUT') --}}
+
 
         <div class="mb-3">
             <label for="postal_code" class="form-label">郵便番号</label>
             <input type="text" name="postal_code" id="postal_code" class="form-control"
                 value="{{ old('postal_code', $shippingAddress->postal_code ?? '') }}">
-            @error('postcode')
+            @error('postal_code')
             <div class="text-danger">{{ $message }}</div>
             @enderror
         </div>

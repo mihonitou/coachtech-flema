@@ -15,6 +15,15 @@ class ItemController extends Controller
 {
     public function index(Request $request)
     {
+        if (Auth::check()) {
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
+
+            if (!$user->hasVerifiedEmail()) {
+                return redirect()->route('verification.notice');
+            }
+        }
+
         $tab = $request->query('tab');
         $query = $request->query('query');
 

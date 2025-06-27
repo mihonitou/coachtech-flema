@@ -34,10 +34,15 @@ class CreateNewUser implements CreatesNewUsers
             'password.confirmed' => 'パスワードと一致しません。',
         ])->validate();
 
-        return User::create([
+        // ✅ ユーザーを作成
+        $user = User::create([
             'name' => $input['name'],
             'email' => $input['email'],
             'password' => Hash::make($input['password']),
         ]);
+        // ✅ ここで「新規登録直後フラグ」を立てる
+        session(['just_registered' => true]);
+
+        return $user;
     }
 }

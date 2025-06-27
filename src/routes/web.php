@@ -45,7 +45,14 @@ Route::get('/email/verify', function () {
 
 Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
     $request->fulfill(); // email_verified_at を更新
-    return redirect('/'); // 認証後のリダイレクト先（お好みで）
+
+    // ✅ セッションに just_registered がある → 新規登録直後の認証
+    if (session()->pull('just_registered')) {
+        return redirect()->route('mypage.edit'); // プロフィール編集画面へ
+    }
+
+    // ✅ 通常のログイン後の認証
+    return redirect()->route('home'); // 商品一覧へ
 })->middleware(['auth', 'signed'])->name('verification.verify');
 
 Route::post('/email/verification-notification', function (Request $request) {
@@ -72,12 +79,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 表示用: 編集画面を開く
     Route::get('/purchase/address/{item}', [PurchaseController::class, 'editAddress'])->name('purchase.address.edit');
-    // 更新用: 送信された住所を保存
+    // 更新用: PUT（本来の正規ルート）
     Route::put('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->name('purchase.address.update');
-
-    // 一時的なテスト用ルート（追記）
-    Route::post('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->name('purchase.address.update.test');
-
+    // フォーム互換のため、POSTでも同じアクションを許可する ← 追加
+    Route::post('/purchase/address/{item}', [PurchaseController::class, 'updateAddress'])->name('purchase.address.update.fallback');
     // マイページ関連
     Route::get('/mypage', [UserController::class, 'show'])->name('mypage');
     Route::get('/mypage/profile', [UserController::class, 'edit'])->name('mypage.edit');

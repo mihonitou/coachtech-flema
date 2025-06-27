@@ -18,6 +18,16 @@ use Illuminate\Support\Str;
 <div class="alert__danger">{{ session('error') }}</div>
 @endif
 
+@if ($errors->any())
+<div class="alert alert-danger">
+    <ul>
+        @foreach ($errors->all() as $error)
+        <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
+
 <div class="purchase-container">
 
 
@@ -66,12 +76,12 @@ use Illuminate\Support\Str;
                 </div>
 
                 {{-- 配送先未登録メッセージ --}}
-                @if (
-                empty(old('postal_code')) && empty(optional($shippingAddress)->postal_code) && empty($user->postal_code)
-                || empty(old('address')) && empty(optional($shippingAddress)->address) && empty($user->address)
-                )
-                <div class="no-shipping-warning">※ まだ配送先が登録されていません。</div>
-                @endif
+                @php
+                $noPostal = empty(old('postal_code')) && empty(optional($shippingAddress)->postal_code) && empty($user->postal_code);
+                $noAddress = empty(old('address')) && empty(optional($shippingAddress)->address) && empty($user->address);
+                @endphp
+
+
 
                 {{-- 郵便番号 --}}
                 <div class="address-block">
@@ -126,6 +136,7 @@ use Illuminate\Support\Str;
                 <input type="hidden" name="shipment_address_id" value="{{ $shippingAddress->id }}">
                 @endif
             </div>
+
         </form> {{-- ← formはここで閉じる --}}
     </div>
 
@@ -151,7 +162,8 @@ use Illuminate\Support\Str;
         </table>
 
         {{-- formの外だが、form属性で紐付けて送信可能に --}}
-        <button type="submit" form="purchase-form" class="purchase-button">購入する</button>
+        <button type="submit" form="purchase-form" class="purchase-button" id="purchase-button">購入する</button>
+
     </div>
 
 
@@ -164,6 +176,7 @@ use Illuminate\Support\Str;
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        console.log('JSは読み込まれました'); // ← これを追加
         const selectWrapper = document.getElementById('customSelect');
         const selected = selectWrapper.querySelector('.selected');
         const optionsList = selectWrapper.querySelector('.select-options');
@@ -203,7 +216,7 @@ use Illuminate\Support\Str;
 
                 // フォームの action を変更
                 if (option.dataset.value === 'カード払い') {
-                    form.action = `/purchase/checkout/${itemId}`;
+                    form.action = `/purchase/${itemId}/checkout`; // ← 正しい構文
                 } else {
                     form.action = `/purchase/${itemId}`;
                 }
@@ -228,15 +241,21 @@ use Illuminate\Support\Str;
                 return;
             }
 
-            // 念のため action 再設定（信頼性向上のため）
-            if (!form.action.includes('/purchase')) {
-                if (hiddenInput.value === 'カード払い') {
-                    form.action = `/purchase/checkout/${itemId}`;
-                } else {
-                    form.action = `/purchase/${itemId}`;
-                }
+            // ✅ form.action を常に上書き（信頼性向上）
+            if (hiddenInput.value === 'カード払い') {
+                form.action = `/purchase/${itemId}/checkout`;
+            } else {
+                form.action = `/purchase/${itemId}`;
             }
         });
+
+        // ←ここに追加してOK
+        const purchaseButton = document.getElementById('purchase-button');
+        if (purchaseButton) {
+            purchaseButton.addEventListener('click', function() {
+                console.log('購入ボタンがクリックされました');
+            });
+        }
     });
 </script>
 @endsection

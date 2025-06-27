@@ -1,18 +1,5 @@
 /* purchase_index.css */
 
-.purchase-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    gap: 32px;
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    font-family: "Helvetica Neue", sans-serif;
-    color: #333;
-    box-sizing: border-box;
-}
-
 .alert__danger {
     color: #bf1928;
     background-color: #f8d7da;
@@ -29,6 +16,18 @@
     margin-bottom: 20px;
     border-radius: 5px;
     font-size: 0.95em;
+}
+.purchase-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 32px;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    font-family: "Helvetica Neue", sans-serif;
+    color: #333;
+    box-sizing: border-box;
 }
 
 .left-column {

@@ -116,6 +116,15 @@
     word-break: break-word;
 }
 
+.alert-message.success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 12px 16px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
 /* ==============================
    レスポンシブ調整（PC/タブレット）
 ============================== */

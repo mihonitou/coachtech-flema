@@ -24,7 +24,17 @@ class LoginController extends Controller
         // セッション再生成（セキュリティ対策）
         $request->session()->regenerate();
 
+        $user = Auth::user(); // IDEには mixed 型と認識されることがある
+
+        // 明示的に User 型として扱う（補助用）
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
+        }
+
         // 認証成功 → 商品一覧へリダイレクト
-        return redirect()->intended('/');
+        return redirect()->route('home');
     }
 }

@@ -6,6 +6,12 @@
 
 @section('content')
 
+@if (session('success'))
+<div class="alert-message success">
+    {{ session('success') }}
+</div>
+@endif
+
 <div class="index-container">
 
     {{-- タブメニュー --}}
