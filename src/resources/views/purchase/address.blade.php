@@ -14,11 +14,8 @@
 <div class="container">
     <h2 class="text-center my-4">住所の変更</h2>
 
-
-
-    <form action="{{ route('purchase.address.update.fallback', ['item' => $item->id]) }}" method="POST">
+    <form method="POST" action="{{ route('purchase.address.update.fallback', ['item' => $item->id]) }}">
         @csrf
-
 
         <div class="mb-3">
             <label for="postal_code" class="form-label">郵便番号</label>

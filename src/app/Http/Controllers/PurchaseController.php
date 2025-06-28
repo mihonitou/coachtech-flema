@@ -113,7 +113,6 @@ class PurchaseController extends Controller
         ]);
 
         return redirect($session->url);
-
     }
 
     public function success(Item $item)
@@ -169,10 +168,11 @@ class PurchaseController extends Controller
 
     public function updateAddress(AddressRequest $request, Item $item)
     {
-        Log::info('★★★ updateAddress アクション呼び出し確認 ★★★');
-        $purchase = Purchase::where('item_id', $item->id)
-            ->where('user_id', Auth::id())
-            ->firstOrFail();
+        Log::info('✅ updateAddress 入りました');
+
+        $purchase = Purchase::firstOrCreate(
+            ['item_id' => $item->id, 'user_id' => Auth::id()]
+        );
 
         $data = $request->only(['postal_code', 'address', 'building']);
 
@@ -182,12 +182,19 @@ class PurchaseController extends Controller
             $purchase->shipmentAddress->update($data);
         } else {
             // 新規作成
-            $purchase->shipmentAddress()->create($data);
+            $purchase->shipmentAddress()->create([
+                'user_id' => Auth::id(),
+                'item_id' => $item->id, // 👈 これを追加！！
+                'postal_code' => $data['postal_code'],
+                'address' => $data['address'],
+                'building' => $data['building'],
+            ]);
         }
 
         // 修正後（edit画面にリダイレクト）
         return redirect()
             ->route('purchase.address.edit', ['item' => $item->id])
             ->with('success', '住所を更新しました');
+
     }
 }
